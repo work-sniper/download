@@ -2,40 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-    <!-- STYLES -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- GOOGLE FONTS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
+    <title>File Uploader</title>
 </head>
 <body>
-    
-    <div id="main-container">
+    <h1>Upload File</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" required>
+        <button type="submit">Upload</button>
+    </form>
 
-        <div>
-            <h1 id="main-title">تحدث معي</h1>
-        </div>
+    <h2>Uploaded Files</h2>
+    <ul id="fileList"></ul>
 
-        <div id="main-content">
-            <input id="word-input" type="text" placeholder="اسأل ما تشاء للذكاء الاصطناعي..">
-            <button id="submit-btn">إرسال</button>
-        </div>
+    <script>
+        const form = document.getElementById('uploadForm');
+        const input = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
 
-        <div id="reply-content">
-            أهلا بك.. اطرح أي سؤال يدور في بالك
-        </div>
-        
-        
-    </div>
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('https://api.gofile.io/uploadFile', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                const fileUrl = data.data.link;
+                const fileName = file.name;
+
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.textContent = fileName;
+                listItem.appendChild(link);
+                fileList.appendChild(listItem);
+
+                // Clear input field
+                input.value = '';
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
+        });
+    </script>
 </body>
-
-<!-- AXIOS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
-<script src="script.js"></script>
 </html>
