@@ -51,6 +51,11 @@
                 listItem.appendChild(link);
                 fileList.appendChild(listItem);
 
+                // Display the image
+                const imageElement = document.createElement('img');
+                imageElement.src = fileUrl;
+                fileList.appendChild(imageElement);
+
                 // Clear input field
                 fileInput.value = '';
             })
