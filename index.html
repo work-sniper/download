@@ -1,68 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Uploader</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحويل فيديو YouTube إلى MP3/MP4</title>
 </head>
 <body>
-    <h1>Upload File</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="fileInput" required>
-        <button type="button" onclick="uploadFile()">Upload</button>
-    </form>
+  <h1>تحويل فيديو YouTube إلى MP3/MP4</h1>
+  <form id="conversionForm">
+    <label for="videoUrl">رابط الفيديو من YouTube:</label>
+    <input type="text" id="videoUrl" name="videoUrl" required><br><br>
 
-    <h2>Uploaded Files</h2>
-    <ul id="fileList"></ul>
+    <label for="format">اختر الصيغة:</label>
+    <select id="format" name="format" required>
+      <option value="mp3">MP3</option>
+      <option value="mp4">MP4</option>
+    </select><br><br>
 
-        <iframe src="https://gofile.io/d/mCH3Tb" ></iframe>
+    <button type="submit">تحميل</button>
+  </form>
 
-    <script>
-        const fileList = document.getElementById('fileList');
+  <div id="downloadLink"></div>
 
-        function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append('file', file);
+  <script>
+    document.getElementById('conversionForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const videoUrl = document.getElementById('videoUrl').value;
+      const format = document.getElementById('format').value;
 
-            fetch('https://api.gofile.io/servers', {
-                method: 'GET'
-            })
-            .then(response => response.json())
-            .then(data => {
-                const server = data.data.servers[0].name; // Assume using the first server
+      try {
+        const response = await fetch('/convert', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer AIzaSyA92Roc9iuMMHI1cHjWCZOcVnZYC_XF0fg'
+          },
+          body: JSON.stringify({ videoUrl, format })
+        });
+        const data = await response.json();
 
-                const uploadUrl = `https://${server}.gofile.io/contents/uploadfile`;
-                const uploadFormData = new FormData();
-                uploadFormData.append('file', file);
-
-                return fetch(uploadUrl, {
-                    method: 'POST',
-                    body: uploadFormData
-                });
-            })
-            .then(response => response.json())
-            .then(data => {
-                const fileUrl = data.data.downloadPage;
-
-                const listItem = document.createElement('li');
-                const link = document.createElement('a');
-                link.href = fileUrl;
-                link.textContent = file.name;
-                listItem.appendChild(link);
-                fileList.appendChild(listItem);
-
-                // Display the image
-                const imageElement = document.createElement('img');
-                imageElement.src = fileUrl;
-                fileList.appendChild(imageElement);
-
-                // Clear input field
-                fileInput.value = '';
-            })
-            .catch(error => console.error('Error uploading file:', error));
+        if (data.success) {
+          document.getElementById('downloadLink').innerHTML = `<a href="${data.downloadUrl}" download>تحميل الملف</a>`;
+        } else {
+          document.getElementById('downloadLink').innerHTML = `<p>${data.message}</p>`;
         }
-    </script>
+      } catch (error) {
+        console.error('حدث خطأ أثناء التحويل:', error);
+      }
+    });
+  </script>
 </body>
 </html>
