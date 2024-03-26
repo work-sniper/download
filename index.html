@@ -29,13 +29,12 @@
       const format = document.getElementById('format').value;
 
       try {
-        const response = await fetch('/convert', {
+        const response = await fetch('/convert.php', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer AIzaSyA92Roc9iuMMHI1cHjWCZOcVnZYC_XF0fg'
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ videoUrl, format })
+          body: JSON.stringify({ videoUrl, format, apiKey: 'AIzaSyA92Roc9iuMMHI1cHjWCZOcVnZYC_XF0fg' })
         });
         const data = await response.json();
 
