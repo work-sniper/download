@@ -1,52 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تحويل فيديو YouTube إلى MP3/MP4</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Image Converter</title>
+    <!-- تضمين مكتبة @gradio/client -->
+    <script src="https://unpkg.com/@gradio/client"></script>
 </head>
 <body>
-  <h1>تحويل فيديو YouTube إلى MP3/MP4</h1>
-  <form id="conversionForm">
-    <label for="videoUrl">رابط الفيديو من YouTube:</label>
-    <input type="text" id="videoUrl" name="videoUrl" required><br><br>
+    <h1>Text to Image Converter</h1>
+    <!-- نموذج لإدخال النص -->
+    <textarea id="textInput" placeholder="Enter text here"></textarea>
+    <button onclick="convertText()">Convert to Image</button>
+    <!-- عرض الصورة المولدة -->
+    <div id="imageContainer"></div>
 
-    <label for="format">اختر الصيغة:</label>
-    <select id="format" name="format" required>
-      <option value="mp3">MP3</option>
-      <option value="mp4">MP4</option>
-    </select><br><br>
+    <!-- سكريبت جافا سكريبت لتحويل النص إلى صورة -->
+    <script>
+        // دالة لتحويل النص إلى صورة باستخدام API ByteDance/SDXL-Lightning
+        async function convertText() {
+            const text = document.getElementById('textInput').value;
+            const app = await gr.client("ByteDance/SDXL-Lightning");
+            const result = await app.predict("/generate_image", [text, "1-Step"]);
 
-    <button type="submit">تحميل</button>
-  </form>
-
-  <div id="downloadLink"></div>
-
-  <script>
-    document.getElementById('conversionForm').addEventListener('submit', async function(event) {
-      event.preventDefault();
-      const videoUrl = document.getElementById('videoUrl').value;
-      const format = document.getElementById('format').value;
-
-      try {
-        const response = await fetch('/convert.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ videoUrl, format, apiKey: 'AIzaSyA92Roc9iuMMHI1cHjWCZOcVnZYC_XF0fg' })
-        });
-        const data = await response.json();
-
-        if (data.success) {
-          document.getElementById('downloadLink').innerHTML = `<a href="${data.downloadUrl}" download>تحميل الملف</a>`;
-        } else {
-          document.getElementById('downloadLink').innerHTML = `<p>${data.message}</p>`;
+            // عرض الصورة المولدة
+            document.getElementById('imageContainer').innerHTML = `<img src="${result.data}" alt="Generated Image">`;
         }
-      } catch (error) {
-        console.error('حدث خطأ أثناء التحويل:', error);
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
