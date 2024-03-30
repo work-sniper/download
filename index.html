@@ -4,7 +4,7 @@
 	<head>
 		
 	<link rel="icon" href="https://www5.0zz0.com/2024/03/29/16/389166394.png" type="image/x-icon">
-
+  <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Discover how Imag Ai enhances image quality and professionalism using artificial intelligence technology.">
@@ -360,69 +360,46 @@
 		<h1 style=" margin-top:20px;  ">
 			Free & Easy AI Image Enhancer
 			</h1>
-			
+			  <button id="install-button" style="">إضافة إلى الشاشة الرئيسية</button>
 			<h3>
 				 Enhance Your Images Hassle-Free!
 				</h3>
-		    <a href="#" onclick="addToHome()">إضافة إلى الشاشة الرئيسية</a>
+		
 		</center>
 </div>
 	
     <!-- محتوى موقعك هنا -->
 
     <!-- رابط إضافة اختصار لشاشة الهاتف -->
-    <a href="#" onclick="addToHome()">إضافة إلى الشاشة الرئيسية</a>
 
-  
-		</center>
-</div>
-	
-	<div class="navbar-fixed-bottom" style="display: none;"> <!-- يتم إخفاء الـ navbar بشكل افتراضي -->
-    <div class="container text-center">
-        <p>Download the app from here</p>
-        <button id="downloadBtn" onclick="createShortcut()">Download</button>
-    </div>
-</div>
+  <!-- زر التثبيت -->
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        setTimeout(function() {
-            document.querySelector(".navbar-fixed-bottom").style.display = "block"; // يعرض الـ navbar بعد 5 ثوانٍ
-        }, 5000); // 5 ثوانٍ بالمللي ثانية
-    });
 
-    function createShortcut() {
-        if ('share' in navigator) {
-            navigator.share({
-                title: 'Imag Ai',
-                text: 'Download the app from here',
-                url: 'https://work-sniper.github.io/download/'
-            })
-            .then(() => console.log('Successful share'))
-            .catch(error => console.log('Error sharing:', error));
-        } else {
-            alert('Your browser does not support creating shortcuts.');
-        }
+  <!-- تضمين ملف Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) { 
+      navigator.serviceWorker.register('service-worker.js') 
+        .then(registration => { 
+          console.log('تم تسجيل خدمة العمل بنطاق:', registration.scope); 
+        }) 
+        .catch(error => { 
+          console.log('فشل تسجيل خدمة العمل:', error); 
+        }); 
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            document.querySelector(".navbar-fixed-bottom").style.display = "none"; // يخفي الـ navbar عندما يكون المستخدم مستخدمًا الاختصار
-        }
+    // كود لحث المستخدم على التثبيت
+    self.addEventListener('beforeinstallprompt', event => { 
+      event.preventDefault(); 
+      const installButton = document.getElementById('install-button'); 
+      if (installButton) { 
+        installButton.style.display = 'block'; 
+        installButton.addEventListener('click', () => { 
+          event.prompt(); 
+        }); 
+      } 
     });
-</script>
+  </script>
 
- <script>
-        // دالة تنفيذ عملية الإضافة إلى الشاشة الرئيسية
-        function addToHome() {
-            if ('addToHomeScreen' in navigator) {
-                navigator.addToHomeScreen();
-            } else {
-                alert('عذرًا، لا يمكن إضافة الاختصار حاليًا.');
-            }
-        }
-    </script>
-  
 	</body>
 	
 </html>
