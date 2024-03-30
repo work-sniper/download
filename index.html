@@ -404,6 +404,16 @@
 </script>
 
 
+    <script>
+        // دالة تنفيذ عملية الإضافة إلى الشاشة الرئيسية
+        function addToHome() {
+            if ('addToHomeScreen' in navigator) {
+                navigator.addToHomeScreen();
+            } else {
+                alert('عذرًا، لا يمكن إضافة الاختصار حاليًا.');
+            }
+        }
+    </script>
 	</body>
 	
 </html>
