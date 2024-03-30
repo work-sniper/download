@@ -8,7 +8,7 @@
       "type": "image/png" 
     } 
   ], 
-  "start_url": "https://work-sniper.github.io/download/#", 
+  "start_url": "https://work-sniper.github.io/download/", 
   "display": "standalone", 
   "background_color": "#ffffff", 
   "theme_color": "#ffffff" 
